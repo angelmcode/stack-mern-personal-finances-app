@@ -1,0 +1,17 @@
+.incomes {
+    width: 298px;
+    height: 258px;
+    /* border: 1px solid black; */
+    background-color: beige;
+    border-radius: 10px;
+}
+
+.table-incomes {
+    /* border: 1px solid black; */
+    border-collapse: collapse;
+}
+
+.th-incomes {
+    /* border: 1px solid black; */
+    /* padding: 10px; */
+}
