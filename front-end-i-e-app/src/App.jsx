@@ -6,6 +6,12 @@ import Inputs from './components/inputs'
 import Results from './components/results'
 
 function App() {
+  
+  let formatn = new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency: "USD"
+  })
+
   const [displayExpenses, setDisplayExpenses] = useState([])
   const [displayIncomes, setDisplayIncomes] = useState([])
 
@@ -17,6 +23,9 @@ function App() {
   const [tExpenses, setTExpenses] = useState(0)
   const [tIncomes, setTIncomes] = useState(0)
   const [difference, setDifference] = useState(0)
+
+  const [sended, setSended] = useState("")
+  const [buttonSend, setButtonSend] = useState("Send")
 
   useEffect(() => {
     fetchGetE();
@@ -90,9 +99,9 @@ function App() {
       let form = document.getElementById("form");
       let data = new FormData(form)
 
-      if (data.get("concept")===""||data.get("amount")==="") {
-          window.alert("Concept and Amount fields are required")
-      }
+      // if (data.get("concept")===""||data.get("amount")==="") {
+      //     window.alert("Concept and Amount fields are required")
+      // }
 
       // console.log(id)
       let arrayAmount = data.get("amount").split("")
@@ -103,7 +112,7 @@ function App() {
       }
       let stringAmount = arrayAmount.join("")
 
-      let amount = parseInt(stringAmount);
+      let amount = parseFloat(stringAmount);
 
       let url ="";
       if (data.get("select")==="Expense") {
@@ -128,13 +137,18 @@ function App() {
           setId("")
           fetchGetE();
           fetchGetI();
+
+          setSended(data.get("select") + " Updated")
+          setTimeout(() => {
+            setSended("")
+          }, 2000);
+          
+          setButtonSend("Send");
       })
       .catch(err => console.log(err)) 
 
       setConcept("")
       setAmount("")
-
-      console.log("whats up")
 
     } else if (id==="") {    
       let form = document.getElementById("form");
@@ -154,7 +168,7 @@ function App() {
       }
       let stringAmount = arrayAmount.join("")
 
-      let amount = parseInt(stringAmount);
+      let amount = parseFloat(stringAmount);
       console.log("amount" + amount)
 
       let url ="";
@@ -179,6 +193,14 @@ function App() {
           console.log(response)
           fetchGetE();
           fetchGetI();
+          console.log(concept)
+          console.log(amount)
+          if (data.get("concept")!==""&&data.get("amount")!=="") {
+            setSended(data.get("select") + " Added")
+            setTimeout(() => {
+              setSended("")
+            }, 2000);
+          }
       })
       .catch(err => console.log(err))
 
@@ -216,36 +238,35 @@ function App() {
   }
 
   const handleChange = (e) => {
-    // console.log(e.target.value)
-    // console.log( e.target.name)
     if (e.target.name === "concept") {
       setConcept(e.target.value)
     } else if (e.target.name === "amount") {
-      console.log(e.target.value)
+
       if (e.target.value === "") {
-        e.target.value = "0"
-      }
-      let string = e.target.value
-      let array = string.split("")
-      console.log(array)
-      for (let i = 0; i < array.length; i++) {
-        if (string[i] === ",") {
-          array[i]=""
+        setAmount("0")
+      } else {
+        let string = e.target.value
+        console.log(string)
+        let array = string.split("")
+      
+        for (let i = 0; i < array.length; i++) {
+          if (string[i] === ".") {
+            setAmount(e.target.value)
+            return
+          } else if (string[i] === ",") {
+            array[i]=""
+          }
         }
+
+        string = array.join("")
+        let a = parseFloat(string)
+        let string2 = a.toLocaleString()
+        setAmount(string2)
       }
-      string = array.join("")
-      console.log(array)
-      console.log(string)
-      let a = parseFloat(string)
-      setAmount(a.toLocaleString())
-      // console.log(array)
-      // console.log(string)
+      
     } else if (e.target.name === "select") {
       setSelect(e.target.value)
     }
-    
-    // setConcept(e.target.value)
-    // setAmount(e.target.value)
   }
 
   const editRowE = (id) => {
@@ -259,6 +280,7 @@ function App() {
         // fetchGetE()
       setId(response._id)
       setSelect("Expense")
+      setButtonSend("Update")
     })
     .catch(err => console.log(err))
   }
@@ -274,6 +296,7 @@ function App() {
         // fetchGetE()
       setId(response._id)
       setSelect("Income")
+      setButtonSend("Update")
     })
     .catch(err => console.log(err))
   }
@@ -283,7 +306,7 @@ function App() {
       <h1 className='h1-app bg-purple-950 text-white w-full text-5xl pb-3 pt-2 mb-3 border-b-white'>Personal Finances App</h1>
       <div className=' flex flex-col items-center'>
         <div className='container-app justify-center'>
-          <Inputs select={select} concept={concept} amount={amount} addToDb={addToDb} handleChange={handleChange} />
+          <Inputs select={select} concept={concept} amount={amount} addToDb={addToDb} handleChange={handleChange} sended={sended} buttonSend={buttonSend} />
           <Results tExpenses={tExpenses} tIncomes={tIncomes} difference={difference} />
           <Incomes incomesDisplay={displayIncomes} deleteRowI={deleteRowI} editRowI={editRowI} />
           <Expenses expensesDisplay={displayExpenses} deleteRowE={deleteRowE} editRowE={editRowE}/>

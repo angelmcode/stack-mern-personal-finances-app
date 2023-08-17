@@ -27,7 +27,7 @@ function Incomes({ incomesDisplay, deleteRowI, editRowI }) {
               return (
                 <tr className='tr bg-white border-b border-black' key={income._id}>
                   <td className=' p-4 pl-4'>{income.concept}</td>
-                  <td className='pl-4 pr-5'>{formatn.format(income.amount)}</td>
+                  <td className=' pt-4 pb-4 pl-4 pr-5'>{formatn.format(income.amount)}</td>
                   <td className=' pr-3'><button onClick={() => editRowI(income._id)}><IconEdit /></button></td>
                   <td className=' pr-2'><button onClick={() => deleteRowI(income._id)}><IconDelete /></button></td>
                 </tr>

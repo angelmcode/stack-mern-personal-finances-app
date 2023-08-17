@@ -27,7 +27,7 @@ let formatn = new Intl.NumberFormat(undefined, {
               return (
                 <tr className="tr bg-white border-b border-black" key={expense._id}>
                   <td className=' p-4 pl-4'>{expense.concept}</td>
-                  <td className='pl-4 pr-5'>{formatn.format(expense.amount)}</td>
+                  <td className=' pt-4 pb-4 pl-4 pr-5'>{formatn.format(expense.amount)}</td>
                   <td className=' pr-3'><button onClick={() => editRowE(expense._id)}><IconEdit /></button></td>
                   <td className=' pr-2'><button onClick={() => deleteRowE(expense._id)}><IconDelete /></button></td>
                 </tr>
